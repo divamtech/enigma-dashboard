@@ -31,8 +31,8 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ PUSH_FRONTEND_AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ PUSH_FRONTEND_AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ aws-secret.PUSH_FRONTEND_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ aws-secret.PUSH_FRONTEND_AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-south-1
       - name: Deploy static site to S3 bucket
         run: aws s3 sync ./dist/ s3://enigma.webledger.in --delete
