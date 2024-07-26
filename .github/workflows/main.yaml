@@ -27,7 +27,7 @@ jobs:
       - name: Setup Env
         run: cp .env.example .env
       - name: Building the project
-        run: VUE_APP_CURRENT_SHA=$(git rev-parse HEAD) VUE_APP_API_URL=https://books-dash.webledger.in/api npm run build
+        run: VUE_APP_CURRENT_SHA=$(git rev-parse HEAD) VUE_APP_API_URL=https://enigma-api.webledger.in/api npm run build
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
