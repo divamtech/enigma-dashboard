@@ -1,0 +1,38 @@
+name: Code Build & Deploy - Prod
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      job:
+        description: 'Job to run.'
+        required: true
+        default: 'deploy'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Upgrade npm
+        run: npm install -g npm@8.1.2
+      - name: Installing project dependencies
+        run: npm install
+      - name: Setup Env
+        run: cp .env.example .env
+      - name: Building the project
+        run: VUE_APP_CURRENT_SHA=$(git rev-parse HEAD) VUE_APP_API_URL=https://books-dash.webledger.in/api npm run build
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.S3_GH_PUSH_FRONTEND_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.S3_GH_PUSH_FRONTEND_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+      - name: Deploy static site to S3 bucket
+        run: aws s3 sync ./dist/ s3://enigma.webledger.in --delete
