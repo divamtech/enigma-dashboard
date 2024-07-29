@@ -115,7 +115,7 @@ const handleSubmit = async (event) => {
 
   try {
   const response = await axios.post(
-  '/auth/signin', 
+  '/api/auth/signin', 
   {
     email: formData.email.value,
     password: formData.password.value,
