@@ -2,6 +2,9 @@ import { createRouter, createWebHistory } from "vue-router";
 import Signin from "../views/Signin.vue";
 import Signup from "../views/Signup.vue";
 import baseRoutes from "./baseRoutes.js";
+import { useStore } from "vuex";
+
+const store = useStore();
 
 const routes = [
 
@@ -39,12 +42,11 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
  
-  if (to.meta.requiresAuth && sessionStorage.authToken == null) {   
-      next('/Signin');
-
-    } else {
-      next();
-    }
+  if (to.meta.requiresAuth && store.state.authenticated==false) {
+    next('/Signin')
+  } else {
+    next()
+  }
 
    
    

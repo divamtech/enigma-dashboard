@@ -2,6 +2,7 @@ import { createStore } from "vuex";
 
 export default createStore({
   state: {
+    authenticated:false,
     hideConfigButton: false,
     isPinned: false,
     showConfig: false,
@@ -44,11 +45,17 @@ export default createStore({
         state.isNavFixed = false;
       }
     },
+    setTheAuth(state, auth) {
+      state.authenticated = auth
+    },
   },
   actions: {
     toggleSidebarColor({ commit }, payload) {
       commit("sidebarType", payload);
     },
+    setAuth({ commit }, auth) {
+      commit('setTheAuth', auth);
+    }
   },
   getters: {},
 });
