@@ -83,8 +83,8 @@ import { ref } from 'vue'
 
 const body = document.getElementsByTagName('body')[0]
 
-const router = useRouter();
-const store = useStore();
+const router = useRouter()
+const store = useStore()
 onBeforeMount(() => {
   store.state.hideConfigButton = true
   store.state.showNavbar = false
@@ -112,32 +112,32 @@ const errorMessage = ref('')
 const handleSubmit = async (event) => {
   event.preventDefault() // Prevent default form submission
   console.log('data :', formData)
-
   try {
-  const response = await axios.post(
-  '/auth/signin', 
-  {
-    email: formData.email.value,
-    password: formData.password.value,
-    // rememberMe: formData.rememberMe.value
-  },
-  {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    withCredentials: true 
-  }
-);
-    
+    const response = await axios.post(
+      '/api/auth/signin',
+      {
+        email: formData.email.value,
+        password: formData.password.value,
+        // rememberMe: formData.rememberMe.value
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true,
+      },
+    )
+
     console.log('Response from backend:', response.data)
     if (response.data) {
       successMessage.value = 'Successfully signed in!'
       router.push({ name: 'Dashboard' })
     }
     // sessionStorage.authToken = response.data.accessToken
-    await store.dispatch("setAuth", true);
+    await store.dispatch('setAuth', true)
   } catch (error) {
-    await store.dispatch("setAuth", false);
+    await store.dispatch('setAuth', false)
+
     errorMessage.value = 'An error occurred during sign in. Please try again.'
     console.error('Error while signing in:', error)
     // Optionally, you can handle error response here

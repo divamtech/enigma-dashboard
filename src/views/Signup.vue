@@ -254,7 +254,7 @@ const handleSubmit = async (event) => {
   event.preventDefault(); // Prevent default form submission
   
   try {
-    const response = await axios.post('api/auth/signup', {
+    const response = await axios.post('/api/auth/signup', {
       username: formData.name.value,
       email: formData.email.value,
       password: formData.password.value,
