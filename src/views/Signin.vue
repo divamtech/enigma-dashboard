@@ -112,6 +112,7 @@ const errorMessage = ref('')
 const handleSubmit = async (event) => {
   event.preventDefault() // Prevent default form submission
   console.log('data :', formData)
+
   try {
     const response = await axios.post(
       '/api/auth/signin',
@@ -131,10 +132,11 @@ const handleSubmit = async (event) => {
     console.log('Response from backend:', response.data)
     if (response.data) {
       successMessage.value = 'Successfully signed in!'
+      await store.dispatch('setAuth', true)
       router.push({ name: 'Dashboard' })
     }
+
     // sessionStorage.authToken = response.data.accessToken
-    await store.dispatch('setAuth', true)
   } catch (error) {
     await store.dispatch('setAuth', false)
 

@@ -4,8 +4,6 @@ import Signup from '../views/Signup.vue'
 import baseRoutes from './baseRoutes.js'
 import { useStore } from 'vuex'
 
-const store = useStore()
-
 const routes = [
   {
     path: '/',
@@ -33,8 +31,11 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  const store = useStore()
+  const authenticated = store.state.authenticated
+  debugger
   try {
-    if (to.meta.requiresAuth && !store.state.authenticated) {
+    if (to.meta.requiresAuth && authenticated == false) {
       next('/Signin')
     } else {
       next()
