@@ -1,243 +1,421 @@
-<!-- <script setup>
-import { onBeforeMount, onBeforeUnmount } from "vue";
-import { useStore } from "vuex";
-import MiniStatisticsCard from "@/examples/Cards/MiniStatisticsCard.vue";
-import DeveloperCard from "./components/DeveloperCard.vue";
-import RocketCard from "./components/RocketCard.vue";
-import ActiveUsersChart from "@/examples/Charts/ActiveUsersChart.vue";
-import GradientLineChart from "@/examples/Charts/GradientLineChart.vue";
-import TimelineList from "@/examples/Cards/TimelineList.vue";
-import TimelineItem from "@/examples/Cards/TimelineItem.vue";
-import ProjectCard from "./components/ProjectCard.vue";
-
-import logoXD from "@/assets/img/small-logos/logo-xd.svg";
-import logoAtlassian from "@/assets/img/small-logos/logo-atlassian.svg";
-import logoSlack from "@/assets/img/small-logos/logo-slack.svg";
-import logoSpotify from "@/assets/img/small-logos/logo-spotify.svg";
-import logoJira from "@/assets/img/small-logos/logo-jira.svg";
-import logoInvision from "@/assets/img/small-logos/logo-invision.svg";
-
-import team1 from "@/assets/img/team-1.jpg";
-import team2 from "@/assets/img/team-2.jpg";
-import team3 from "@/assets/img/team-3.jpg";
-import team4 from "@/assets/img/team-4.jpg";
-
-const store = useStore();
-
-onBeforeMount(() => {
-  store.state.isRTL = true;
-  document.querySelector("html").setAttribute("lang", "ar");
-  document.querySelector("html").setAttribute("dir", "rtl");
-  document.querySelector("#app").classList.add("rtl");
-});
-onBeforeUnmount(() => {
-  store.state.isRTL = false;
-  document.querySelector("html").removeAttribute("lang");
-  document.querySelector("html").removeAttribute("dir");
-  document.querySelector("#app").classList.remove("rtl");
-});
-</script>
 <template>
-  <div class="py-4 container-fluid">
-    <div class="row">
-      <div class="col-lg-3 col-sm-6 mb-lg-0">
-        <mini-statistics-card
-          class="p-0 bg-white"
-          :title="{ text: 'أموال اليوم', color: 'text-dark opacity-7' }"
-          :value="{ text: '$53,000', color: 'text-dark' }"
-          :icon="{
-            component: 'ni ni-money-coins text-white',
-            background: 'bg-gradient-success ',
-          }"
-          :percentage="{ value: '55%+', color: 'text-success' }"
-        />
-      </div>
-      <div class="col-lg-3 col-sm-6 mb-lg-0 mb-4">
-        <mini-statistics-card
-          class="p-0 bg-white"
-          :title="{ text: 'مستخدمو اليوم', color: 'text-dark opacity-7' }"
-          :value="{ text: '2,300', color: 'text-dark' }"
-          :icon="{
-            component: 'text-white ni ni-world',
-            background: 'bg-gradient-success ',
-          }"
-          :percentage="{ value: '+33%', color: 'text-success' }"
-        />
-      </div>
-      <div class="col-lg-3 col-sm-6 mb-lg-0 mb-4">
-        <mini-statistics-card
-          class="p-0 bg-white"
-          :title="{ text: 'عملاء جدد', color: 'text-dark opacity-7' }"
-          :value="{ text: '+3,462', color: 'text-dark' }"
-          :icon="{
-            component: 'ni ni-paper-diploma text-white',
-            background: 'bg-gradient-success ',
-          }"
-          :percentage="{ value: '-2%', color: 'text-danger' }"
-        />
-      </div>
-      <div class="col-lg-3 col-sm-6 mb-lg-0 mb-4">
-        <mini-statistics-card
-          class="p-0 bg-white"
-          :title="{ text: 'مبيعات', color: 'text-dark opacity-7' }"
-          :value="{ text: '$103,430', color: 'text-dark' }"
-          :icon="{
-            component: 'ni ni-cart text-white',
-            background: 'bg-gradient-success ',
-          }"
-          :percentage="{ value: '+5%', color: 'text-success' }"
-          rowReverse
-        />
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-lg-7 mb-lg-0 mb-4">
-        <developer-card />
-      </div>
-      <div class="col-lg-5">
-        <rocket-card />
-      </div>
-    </div>
-    <div class="mt-4 row">
-      <div class="col-lg-5 mb-lg-0 mb-4">
-        <active-users-chart />
-      </div>
-      <div class="col-lg-7">
-        <gradient-line-chart
-          id="chart-line-rtl"
-          title="نظرة عامة على المبيعات"
-          description="<i class='fa fa-arrow-up text-success'></i>
-      <span class='font-weight-bold'>4% أكثر</span> في عام 2021"
-          :chart="{
-            labels: [
-              'Apr',
-              'May',
-              'Jun',
-              'Jul',
-              'Aug',
-              'Sep',
-              'Oct',
-              'Nov',
-              'Dec',
-            ],
-            datasets: [
-              {
-                label: 'Mobile Apps',
-                data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
-              },
-            ],
-          }"
-        />
-      </div>
-    </div>
-    <div class="row mt-4">
-      <div class="col-lg-8 col-md-6 mb-md-0 mb-4">
-        <project-card
-          title="المشاريع"
-          description='<i class="fa fa-check text-info" aria-hidden="true"></i>
-            <span class="font-weight-bold ms-1">انتهى30</span>
-            هذا الشهر'
-          :headings="['المشروع', 'أعضاء', 'ميزانية', 'إكمال']"
-          :rows="[
-            {
-              logo: logoXD,
-              tool: 'Material XD الإصدار',
-              teamMembers: [team1, team2, team3, team4],
-              price: '$14,000',
-              progress: 60,
-            },
-            {
-              logo: logoAtlassian,
-              tool: 'أضف مسار التقدم إلى التطبيق الداخلي',
-              teamMembers: [team1, team2],
-              price: '$3,000',
-              progress: 10,
-            },
-            {
-              logo: logoSlack,
-              tool: 'إصلاح أخطاء النظام الأساسي',
-              teamMembers: [team2, team4],
-              price: 'غير مضبوط',
-              progress: 100,
-            },
-            {
-              logo: logoSpotify,
-              tool: 'إطلاق تطبيق الهاتف المحمول الخاص بنا',
-              teamMembers: [team1, team2, team3, team4],
-              price: '$20,500',
-              progress: 60,
-            },
-            {
-              logo: logoJira,
-              tool: 'أضف صفحة التسعير الجديدة',
-              teamMembers: [team1],
-              price: '$500',
-              progress: 25,
-            },
-            {
-              logo: logoInvision,
-              tool: 'إعادة تصميم متجر جديد على الإنترنت',
-              teamMembers: [team1, team4],
-              price: '$2,000',
-              progress: 40,
-            },
-          ]"
-          :action="[
-            {
-              route: 'javascript:;',
-              label: 'عمل',
-            },
-            {
-              route: 'javascript:;',
-              label: 'عمل اخر',
-            },
-            {
-              route: 'javascript:;',
-              label: 'شی اخر هنا',
-            },
-          ]"
-        />
-      </div>
-      <div class="col-lg-4 col-md-6">
-        <timeline-list
-          class="h-100"
-          title="نظرة عامة على الطلبات"
-          description="<i class='fa fa-arrow-up text-success' aria-hidden='true'></i>
-        <span class='font-weight-bold'>24%</span>هذا الشهر"
-        >
-          <timeline-item
-            :icon="{ component: 'ni ni-bell-55', color: 'success' }"
-            title="$2400, تغييرات في التصميم"
-            date-time="22 ديسمبر 7:20 مساءً"
-          />
-          <TimelineItem
-            :icon="{ component: 'ni ni-html5', color: 'danger' }"
-            title="طلب جديد # 1832412"
-            date-time="21 ديسمبر 11 م"
-          />
-          <TimelineItem
-            :icon="{ component: 'ni ni-cart', color: 'info' }"
-            title="مدفوعات الخادم لشهر أبريل"
-            date-time="21 ديسمبر 9:34 مساءً"
-          />
-          <TimelineItem
-            :icon="{ component: 'ni ni-credit-card', color: 'warning' }"
-            title="تمت إضافة بطاقة جديدة للأمر رقم 4395133"
-            date-time="20 ديسمبر 2:20 صباحًا"
-          />
-          <TimelineItem
-            :icon="{ component: 'ni ni-key-25', color: 'primary' }"
-            title="فتح الحزم من أجل التطوير"
-            date-time="18 ديسمبر ، 4:54 صباحًا"
-          />
-          <TimelineItem
-            :icon="{ component: 'ni ni-money-coins', color: 'dark' }"
-            title="طلب جديد # 9583120"
-            date-time="17 ديسمبر"
-          />
-        </timeline-list>
+  <div class="row mt-6">
+    <div class="card shadow-lg mt-n6">
+      <div class="card-body p-3">
+        <div class="row gx-4">
+          
+            
+          <div class="mx-auto mt-3 col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0">
+            
+            <div class="nav-wrapper position-relative end-0">
+              <ul class="p-1 bg-transparent nav nav-pills nav-fill" role="tablist">
+                <li class="nav-item">
+                  <a
+                    class="px-0 py-1 mb-0 nav-link active"
+                    @click="showTableView"
+                    data-bs-toggle="tab"
+                    href="javascript:;"
+                    role="tab"
+                    aria-selected="true"
+                  >
+                    <svg
+                      class="text-dark"
+                      width="16px"
+                      height="16px"
+                      viewBox="0 0 42 42"
+                      version="1.1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink"
+                    >
+                      <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                        <g transform="translate(-2319.000000, -291.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                          <g transform="translate(1716.000000, 291.000000)">
+                            <g transform="translate(603.000000, 0.000000)">
+                              <path
+                                class="color-background"
+                                d="M22.7597136,19.3090182 L38.8987031,11.2395234 C39.3926816,10.9925342 39.592906,10.3918611 39.3459167,9.89788265 C39.249157,9.70436312 39.0922432,9.5474453 38.8987261,9.45068056 L20.2741875,0.1378125 L20.2741875,0.1378125 C19.905375,-0.04725 19.469625,-0.04725 19.0995,0.1378125 L3.1011696,8.13815822 C2.60720568,8.38517662 2.40701679,8.98586148 2.6540352,9.4798254 C2.75080129,9.67332903 2.90771305,9.83023153 3.10122239,9.9269862 L21.8652864,19.3090182 C22.1468139,19.4497819 22.4781861,19.4497819 22.7597136,19.3090182 Z"
+                              />
+                              <path
+                                class="color-background"
+                                d="M23.625,22.429159 L23.625,39.8805372 C23.625,40.4328219 24.0727153,40.8805372 24.625,40.8805372 C24.7802551,40.8805372 24.9333778,40.8443874 25.0722402,40.7749511 L41.2741875,32.673375 L41.2741875,32.673375 C41.719125,32.4515625 42,31.9974375 42,31.5 L42,14.241659 C42,13.6893742 41.5522847,13.241659 41,13.241659 C40.8447549,13.241659 40.6916418,13.2778041 40.5527864,13.3472318 L24.1777864,21.5347318 C23.8390024,21.7041238 23.625,22.0503869 23.625,22.429159 Z"
+                                opacity="0.7"
+                              />
+                              <path
+                                class="color-background"
+                                d="M20.4472136,21.5347318 L1.4472136,12.0347318 C0.953235098,11.7877425 0.352562058,11.9879669 0.105572809,12.4819454 C0.0361450918,12.6208008 6.47121774e-16,12.7739139 0,12.929159 L0,30.1875 L0,30.1875 C0,30.6849375 0.280875,31.1390625 0.7258125,31.3621875 L19.5528096,40.7750766 C20.0467945,41.0220531 20.6474623,40.8218132 20.8944388,40.3278283 C20.963859,40.1889789 21,40.0358742 21,39.8806379 L21,22.429159 C21,22.0503869 20.7859976,21.7041238 20.4472136,21.5347318 Z"
+                                opacity="0.7"
+                              />
+                            </g>
+                          </g>
+                        </g>
+                      </g>
+                    </svg>
+                    <span class="ms-1">Table</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="px-0 py-1 mb-0 nav-link" @click="showJsonView" data-bs-toggle="tab" href="javascript:;" role="tab" aria-selected="false">
+                    <svg
+                      class="text-dark"
+                      width="16px"
+                      height="16px"
+                      viewBox="0 0 40 44"
+                      version="1.1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink"
+                    >
+                      <title>document</title>
+                      <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                        <g transform="translate(-1870.000000, -591.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                          <g transform="translate(1716.000000, 291.000000)">
+                            <g transform="translate(154.000000, 300.000000)">
+                              <path
+                                class="color-background"
+                                d="M40,40 L36.3636364,40 L36.3636364,3.63636364 L5.45454545,3.63636364 L5.45454545,0 L38.1818182,0 C39.1854545,0 40,0.814545455 40,1.81818182 L40,40 Z"
+                                opacity="0.603585379"
+                              />
+                              <path
+                                class="color-background"
+                                d="M30.9090909,7.27272727 L1.81818182,7.27272727 C0.814545455,7.27272727 0,8.08727273 0,9.09090909 L0,41.8181818 C0,42.8218182 0.814545455,43.6363636 1.81818182,43.6363636 L30.9090909,43.6363636 C31.9127273,43.6363636 32.7272727,42.8218182 32.7272727,41.8181818 L32.7272727,9.09090909 C32.7272727,8.08727273 31.9127273,7.27272727 30.9090909,7.27272727 Z M18.1818182,34.5454545 L7.27272727,34.5454545 L7.27272727,30.9090909 L18.1818182,30.9090909 L18.1818182,34.5454545 Z M25.4545455,27.2727273 L7.27272727,27.2727273 L7.27272727,23.6363636 L25.4545455,23.6363636 L25.4545455,27.2727273 Z M25.4545455,20 L7.27272727,20 L7.27272727,16.3636364 L25.4545455,16.3636364 L25.4545455,20 Z"
+                              />
+                            </g>
+                          </g>
+                        </g>
+                      </g>
+                    </svg>
+                    <span class="ms-1">json</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="px-0 py-1 mb-0 nav-link" @click="showKeysView" data-bs-toggle="tab" href="javascript:;" role="tab" aria-selected="false">
+                    <svg
+                      class="text-dark"
+                      width="16px"
+                      height="16px"
+                      viewBox="0 0 40 40"
+                      version="1.1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink"
+                    >
+                      <title>key</title>
+                      <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                        <g transform="translate(-2020.000000, -442.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                          <g transform="translate(1716.000000, 291.000000)">
+                            <g transform="translate(304.000000, 151.000000)">
+                              <polygon
+                                class="color-background"
+                                opacity="0.596981957"
+                                points="18.0883333 15.7316667 11.1783333 8.82166667 13.3333333 6.66666667 6.66666667 0 0 6.66666667 6.66666667 13.3333333 8.82166667 11.1783333 15.315 17.6716667"
+                              />
+                              <path
+                                class="color-background"
+                                d="M31.5666667,23.2333333 C31.0516667,23.2933333 30.53,23.3333333 30,23.3333333 C29.4916667,23.3333333 28.9866667,23.3033333 28.48,23.245 L22.4116667,30.7433333 L29.9416667,38.2733333 C32.2433333,40.575 35.9733333,40.575 38.275,38.2733333 L38.275,38.2733333 C40.5766667,35.9716667 40.5766667,32.2416667 38.275,29.94 L31.5666667,23.2333333 Z"
+                                opacity="0.596981957"
+                              />
+                              <path
+                                class="color-background"
+                                d="M33.785,11.285 L28.715,6.215 L34.0616667,0.868333333 C32.82,0.315 31.4483333,0 30,0 C24.4766667,0 20,4.47666667 20,10 C20,10.99 20.1483333,11.9433333 20.4166667,12.8466667 L2.435,27.3966667 C0.95,28.7083333 0.0633333333,30.595 0.00333333333,32.5733333 C-0.0583333333,34.5533333 0.71,36.4916667 2.11,37.89 C3.47,39.2516667 5.27833333,40 7.20166667,40 C9.26666667,40 11.2366667,39.1133333 12.6033333,37.565 L27.1533333,19.5833333 C28.0566667,19.8516667 29.01,20 30,20 C35.5233333,20 40,15.5233333 40,10 C40,8.55166667 39.685,7.18 39.1316667,5.93666667 L33.785,11.285 Z"
+                              />
+                            </g>
+                          </g>
+                        </g>
+                      </g>
+                    </svg>
+                    <span class="ms-1">ENV</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <CreateFile @pathCreated="handlePathCreated"></CreateFile>
+        
+        <div class="row mt-3">
+          <div class="col-lg-12">
+            <span>
+            <button @click="changeEditMode(true)" class="btn btn-primary">View</button>
+            <button @click="changeEditMode(false)" class="btn btn-primary">Edit</button>
+            </span>
+            <div>path:{{createdPath}}</div>
+          <span v-if="editable">View Mode</span><span v-else>Edit Mode</span>
+            <div v-if="viewMode === 'table'" class="card">
+              <div class="card-body">
+                <h4>Key-Value Pairs</h4>
+                <table class="table" >  
+                  <thead>
+                    <tr>
+                      <th>Key</th>
+                      <th>Value</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody >
+                    <tr v-for="(value, key) in keyValuePairs" :key="key">
+                      <td>
+                        <input v-model="editKeyValues[key].key" type="text" class="form-control" :disabled=editable />
+                      </td>
+                      <td>
+                        <input v-model="editKeyValues[key].value" type="text" class="form-control" :disabled=editable />
+                      </td>
+                      <td>
+                        <button @click="deleteKeyValuePair(key)" class="btn btn-sm btn-danger" v-if="!editable">Delete</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <button @click="addEmptyPair" v-if="!editable" class="btn btn-primary">Add New Pair</button>
+              </div>
+            </div>
+            <div v-if="viewMode === 'json'" class="card">
+              <div class="card-body code-container">
+                <h4>JSON Representation</h4>
+                <div class="line-numbers"></div>
+                <MyTextArea v-model="jsonRepresentation" class="form-control" rows="10" autocomplete="off" :disabled=editable></MyTextArea>
+                <button v-if="!editable" @click="updateFromJson" class="btn btn-primary mt-2">Update</button>
+              </div>
+            </div>
+            <div v-if="viewMode === 'Env'" class="card">
+              <div class="card-body code-container">
+                <h4>Env format</h4>
+                <div class="line-numbers"></div>
+                <MyTextArea v-model="envRepresentation" @blur="updateFromEnv" class="form-control textarea" rows="10" :disabled=editable></MyTextArea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-1">
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-body">
+                <button @click="saveKeyValuePairs" v-if="!editable" class="btn btn-success">Save</button>
+                <button @click="sendKeyValuePairsToBackend"  class="btn btn-primary">Send to Backend</button>
+                    <div v-if="successMessage" class="success-message">
+                  {{ successMessage }}
+                </div>
+
+                <!-- Display error message -->
+                <div v-if="errorMessage" class="error-message">
+                  {{ errorMessage }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</template> -->
-<template><div></div></template>
+</template>
+<script setup>
+import { onBeforeMount, reactive, watch, onMounted } from 'vue'
+import { ref } from 'vue'
+import { useStore } from 'vuex'
+import MyTextArea from '../components/MyTextArea.vue'
+import CreateFile from './components/CreateFile.vue'
+import api from '../services/api'
+import setNavPills from '@/assets/js/nav-pills.js'
+import setTooltip from '@/assets/js/tooltip.js'
+
+
+const store = useStore()
+
+onMounted(() => {
+  store.state.isAbsolute = true
+  setNavPills()
+  setTooltip()
+})
+onBeforeMount(() => {
+ 
+  store.state.showNavbar = false
+  store.state.showFooter = true
+  store.state.hideConfigButton = true
+
+})
+const successMessage = ref('')
+const errorMessage = ref('')
+const editable = ref(false)
+const viewMode = ref('table') // Can be 'table', 'json', or 'keys'
+
+const changeEditMode = (val) => {
+  editable.value = val;
+}
+
+const showTableView = () => {
+  viewMode.value = 'table'
+}
+
+const showJsonView = () => {
+  viewMode.value = 'json'
+}
+
+const showKeysView = () => {
+  viewMode.value = 'Env'
+}
+const keyValuePairs = reactive({})
+const editKeyValues = reactive({})
+const envRepresentation = ref('')
+const jsonRepresentation = ref('')
+// 
+const createdPath = ref('');
+
+const handlePathCreated = (path) => {
+  createdPath.value = path;
+};
+
+watch(
+  keyValuePairs,
+  (newVal) => {
+    jsonRepresentation.value = JSON.stringify(newVal, null, 2)
+    envRepresentation.value = Object.entries(newVal)
+      .map(([key, value]) => `${key}=${value}`)
+      .join('\n')
+  },
+  { deep: true },
+)
+
+const addEmptyPair = () => {
+  const newKey = `key${Object.keys(keyValuePairs).length + 1}`
+  editKeyValues[newKey] = { key: '', value: '' }
+  keyValuePairs[newKey] = ''
+}
+
+const deleteKeyValuePair = (key) => {
+  delete keyValuePairs[key]
+  delete editKeyValues[key]
+}
+
+const saveKeyValuePairs = () => {
+  const updatedKeyValuePairs = {}
+  const updatedEditKeyValues = {}
+  let hasEmptyPair = false
+
+  Object.keys(editKeyValues).forEach((key) => {
+    const { key: newKey, value: newValue } = editKeyValues[key]
+    if (!newKey || !newValue) {
+      hasEmptyPair = true
+      console.warn(`Empty pair detected. Key: ${newKey || key}, Value: ${newValue || ''}`)
+    } else {
+      if (key !== newKey) {
+        delete keyValuePairs[key]
+        delete editKeyValues[key]
+      }
+      updatedKeyValuePairs[newKey] = newValue
+      updatedEditKeyValues[newKey] = { key: newKey, value: newValue }
+    }
+  })
+
+  if (hasEmptyPair) {
+    alert('Some key-value pairs are empty and were not saved.')
+    return
+  }
+
+  // Update the reactive objects
+  Object.assign(keyValuePairs, updatedKeyValuePairs)
+  Object.assign(editKeyValues, updatedEditKeyValues)
+
+  console.log('Key-Value Pairs Saved:', keyValuePairs)
+  localStorage.setItem('keyValuePairs', JSON.stringify(keyValuePairs))
+}
+
+const updateFromEnv = () => {
+  try {
+    const parsedValues = envRepresentation.value
+    const inputLines = parsedValues.trim().split('\n')
+
+    // Clear existing key-value pairs and edit values
+    Object.keys(keyValuePairs).forEach((key) => delete keyValuePairs[key])
+    Object.keys(editKeyValues).forEach((key) => delete editKeyValues[key])
+
+    let hasInvalidPair = false
+
+    inputLines.forEach((line) => {
+      const [key, value] = line.split('=')
+      if (key && value) {
+        const trimmedKey = key.trim()
+        const trimmedValue = value.trim()
+        if (trimmedKey && trimmedValue) {
+          keyValuePairs[trimmedKey] = trimmedValue
+          editKeyValues[trimmedKey] = { key: trimmedKey, value: trimmedValue }
+        }
+      }
+       else {
+          hasInvalidPair = true
+          console.warn(`Invalid pair detected. Key: ${key}, Value: ${value}`)
+        }
+    })
+
+    if (hasInvalidPair) {
+      alert('Some key-value pairs were invalid and were not updated.')
+    }
+  } catch (error) {
+    console.error('Error parsing environment representation:', error)
+  }
+}
+
+const updateFromJson = () => {
+  try {
+    const parsed = JSON.parse(jsonRepresentation.value)
+
+    // Clear existing key-value pairs and edit values
+    Object.keys(keyValuePairs).forEach((key) => delete keyValuePairs[key])
+    Object.keys(editKeyValues).forEach((key) => delete editKeyValues[key])
+
+    let hasInvalidPair = false
+
+    Object.keys(parsed).forEach((key) => {
+      const value = parsed[key]
+      if (key && value) {
+        keyValuePairs[key] = value
+        editKeyValues[key] = { key, value }
+      } else {
+        hasInvalidPair = true
+        console.warn(`Invalid pair detected. Key: ${key}, Value: ${value}`)
+      }
+    })
+
+    if (hasInvalidPair) {
+      alert('Some key-value pairs were invalid and were not updated.')
+    }
+  } catch (error) {
+    console.error('Invalid JSON:', error)
+  }
+}
+const sendKeyValuePairsToBackend = async () => {
+  try {
+     if (!createdPath.value) {
+    alert('Path is not set');
+    return;
+  }
+      const payload = {
+      path:createdPath.value,
+      data: JSON.stringify(keyValuePairs),
+    };
+
+    const response = await api.post('/api/service/save-key-value-pairs', payload, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    successMessage.value = 'Data Successfully sent!'
+    console.log('Response from backend:', response.data)
+  } catch (error) {
+    console.error('Error sending key-value pairs to backend:', error)
+    errorMessage.value = 'something went wrong!'
+  }
+}
+
+onMounted(() => {
+  const savedPairs = localStorage.getItem('keyValuePairs')
+  if (savedPairs) {
+    const parsedPairs = JSON.parse(savedPairs)
+
+    // Clear existing key-value pairs and edit values
+    Object.keys(keyValuePairs).forEach((key) => delete keyValuePairs[key])
+    Object.keys(editKeyValues).forEach((key) => delete editKeyValues[key])
+
+    Object.keys(parsedPairs).forEach((key) => {
+      keyValuePairs[key] = parsedPairs[key]
+      editKeyValues[key] = { key, value: parsedPairs[key] }
+    })
+  }
+})
+</script>

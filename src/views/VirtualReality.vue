@@ -147,4 +147,53 @@ onBeforeUnmount(() => {
   </div>
   <app-footer class="py-3 bg-white border-radius-lg" />
 </template> -->
-<template><div> </div></template>
+<template>
+  <div>
+    <h2>Virtual File System</h2>
+    <ul>
+      <ShowFileStructure :node="virtualFileSystem" :name="'Root'" />
+    </ul>
+  </div>
+</template>
+
+<script setup>
+import {reactive, onMounted } from 'vue';
+import ShowFileStructure from './components/ShowFileStructure.vue';
+import api from '../services/api'
+
+const virtualFileSystem = reactive({});
+
+// Fetch file system structure from the backend
+const fetchFileSystem = async () => {
+  try {
+    const response = await api.get('/api/service/get-key-value-pairs');
+    const storedData = response.data;
+    storedData.forEach(({ path, data }) => {
+      createPathAndAddFile(virtualFileSystem, path.split('/'), data);
+    });
+  } catch (error) {
+    console.error('Error fetching file system:', error);
+  }
+};
+
+// Create folders and add files based on path and content
+const createPathAndAddFile = (currentNode, pathParts, data) => {
+  const lastPart = pathParts.pop(); // The file name
+  let node = currentNode;
+
+  pathParts.forEach(part => {
+    if (!node[part]) {
+      node[part] = {};
+    }
+    node = node[part];
+  });
+
+  // Add file content to the last part of the path
+  node[lastPart] = data;
+};
+
+// Fetch the file system when the component is mounted
+onMounted(() => {
+  fetchFileSystem();
+});
+</script>
