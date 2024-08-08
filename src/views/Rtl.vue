@@ -169,7 +169,7 @@
             <div v-if="viewMode === 'json'" class="card">
               <div class="card-body code-container">
                 <h4>JSON Representation</h4>
-                <div class="line-numbers"></div>
+                <button @click="beautifyJson" class="btn btn-secondary btn-sm">Beautify JSON</button>
                 <MyTextArea v-model="jsonRepresentation" class="form-control" rows="10" autocomplete="off" :disabled=editable></MyTextArea>
                 <button v-if="!editable" @click="updateFromJson" class="btn btn-primary mt-2">Update</button>
               </div>
@@ -177,8 +177,9 @@
             <div v-if="viewMode === 'Env'" class="card">
               <div class="card-body code-container">
                 <h4>Env format</h4>
-                <div class="line-numbers"></div>
-                <MyTextArea v-model="envRepresentation" @blur="updateFromEnv" class="form-control textarea" rows="10" :disabled=editable></MyTextArea>
+                
+                <MyTextArea v-model="envRepresentation" class="form-control textarea" rows="10" :disabled=editable></MyTextArea>
+                <button v-if="!editable" @click="updateFromEnv" class="btn btn-primary mt-2">Update</button>
               </div>
             </div>
           </div>
@@ -254,22 +255,34 @@ const keyValuePairs = reactive({})
 const editKeyValues = reactive({})
 const envRepresentation = ref('')
 const jsonRepresentation = ref('')
-// 
+
 const createdPath = ref('');
 
 const handlePathCreated = (path) => {
   createdPath.value = path;
 };
 
+//
+const beautifyJson = () => {
+  try {
+    jsonRepresentation.value = JSON.stringify(JSON.parse(jsonRepresentation.value), null, 2);
+  } catch (error) {
+    console.error('Invalid JSON:', error);
+    jsonRepresentation.value = 'Invalid JSON format';
+  }
+};
+
+const updateRepresentations = () => {
+  jsonRepresentation.value = JSON.stringify(keyValuePairs, null, 2)
+  envRepresentation.value = Object.entries(keyValuePairs)
+    .map(([key, value]) => `${key}=${value}`)
+    .join('\n')
+}
+
 watch(
   keyValuePairs,
-  (newVal) => {
-    jsonRepresentation.value = JSON.stringify(newVal, null, 2)
-    envRepresentation.value = Object.entries(newVal)
-      .map(([key, value]) => `${key}=${value}`)
-      .join('\n')
-  },
-  { deep: true },
+  updateRepresentations,
+  { deep: true }
 )
 
 const addEmptyPair = () => {
@@ -318,38 +331,43 @@ const saveKeyValuePairs = () => {
 
 const updateFromEnv = () => {
   try {
-    const parsedValues = envRepresentation.value
-    const inputLines = parsedValues.trim().split('\n')
+    const parsedValues = envRepresentation.value.trim();
+    const inputLines = parsedValues.split('\n');
 
     // Clear existing key-value pairs and edit values
-    Object.keys(keyValuePairs).forEach((key) => delete keyValuePairs[key])
-    Object.keys(editKeyValues).forEach((key) => delete editKeyValues[key])
+    Object.keys(keyValuePairs).forEach((key) => delete keyValuePairs[key]);
+    Object.keys(editKeyValues).forEach((key) => delete editKeyValues[key]);
 
-    let hasInvalidPair = false
+    let hasInvalidPair = false;
 
     inputLines.forEach((line) => {
-      const [key, value] = line.split('=')
+      const [key, ...rest] = line.split('=');
+      const value = rest.join('=').trim(); // Handles values containing '='
       if (key && value) {
-        const trimmedKey = key.trim()
-        const trimmedValue = value.trim()
-        if (trimmedKey && trimmedValue) {
-          keyValuePairs[trimmedKey] = trimmedValue
-          editKeyValues[trimmedKey] = { key: trimmedKey, value: trimmedValue }
+        const trimmedKey = key.trim();
+        if (trimmedKey && value) {
+          keyValuePairs[trimmedKey] = value;
+          editKeyValues[trimmedKey] = { key: trimmedKey, value: value };
+        } else {
+          hasInvalidPair = true;
+          console.warn(`Invalid pair detected. Key: ${trimmedKey}, Value: ${value}`);
         }
+      } else {
+        hasInvalidPair = true;
+        console.warn(`Invalid pair detected. Key: ${key}, Value: ${value}`);
       }
-       else {
-          hasInvalidPair = true
-          console.warn(`Invalid pair detected. Key: ${key}, Value: ${value}`)
-        }
-    })
+    });
 
     if (hasInvalidPair) {
-      alert('Some key-value pairs were invalid and were not updated.')
+      alert('Some key-value pairs were invalid and were not updated.');
     }
+
+    // Trigger the update of JSON representation and ENV representation
+    updateRepresentations();
   } catch (error) {
-    console.error('Error parsing environment representation:', error)
+    console.error('Error parsing environment representation:', error);
   }
-}
+};
 
 const updateFromJson = () => {
   try {
@@ -375,22 +393,27 @@ const updateFromJson = () => {
     if (hasInvalidPair) {
       alert('Some key-value pairs were invalid and were not updated.')
     }
+
+    // Trigger the update of JSON representation and ENV representation
+    updateRepresentations()
   } catch (error) {
     console.error('Invalid JSON:', error)
   }
 }
+
 const sendKeyValuePairsToBackend = async () => {
   try {
-     if (!createdPath.value) {
-    alert('Path is not set');
-    return;
-  }
-      const payload = {
-      path:createdPath.value,
+    if (!createdPath.value) {
+      alert('Path is not set');
+      return;
+    }
+
+    const payload = {
+      path: createdPath.value,
       data: JSON.stringify(keyValuePairs),
     };
 
-    const response = await api.post('/api/service/save-key-value-pairs', payload, {
+    const response = await api.post('/api/service/save-path', payload, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -399,7 +422,7 @@ const sendKeyValuePairsToBackend = async () => {
     console.log('Response from backend:', response.data)
   } catch (error) {
     console.error('Error sending key-value pairs to backend:', error)
-    errorMessage.value = 'something went wrong!'
+    errorMessage.value = 'Something went wrong!'
   }
 }
 
@@ -416,6 +439,10 @@ onMounted(() => {
       keyValuePairs[key] = parsedPairs[key]
       editKeyValues[key] = { key, value: parsedPairs[key] }
     })
+
+    // Trigger the update of JSON representation and ENV representation
+    updateRepresentations()
   }
 })
+
 </script>

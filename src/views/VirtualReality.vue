@@ -1,199 +1,153 @@
-<!-- <script setup>
-import { onMounted, onBeforeMount, onBeforeUnmount } from "vue";
-import { useStore } from "vuex";
-import Sidenav from "@/examples/Sidenav";
-import AppFooter from "@/examples/Footer.vue";
-import Navbar from "@/examples/Navbars/Navbar.vue";
-import CardCalendar from "./components/CardCalendar.vue";
-import CardEmail from "./components/CardEmail.vue";
-import CardToDo from "./components/CardToDo.vue";
-import CardPlayer from "./components/CardPlayer.vue";
-import CardMessage from "./components/CardMessage.vue";
-import setTooltip from "@/assets/js/tooltip.js";
 
-const body = document.getElementsByTagName("body")[0];
-
-const store = useStore();
-
-const sidebarMinimize = () => store.commit("sidebarMinimize");
-const toggleConfigurator = () => store.commit("toggleConfigurator");
-
-onMounted(() => {
-  setTooltip();
-});
-
-onBeforeMount(() => {
-  store.state.layout = "vr";
-  store.state.showNavbar = false;
-  store.state.showSidenav = false;
-  store.state.showFooter = false;
-  body.classList.add("virtual-reality");
-  store.state.isTransparent = "bg-white";
-});
-onBeforeUnmount(() => {
-  store.state.layout = "default";
-  store.state.showNavbar = true;
-  store.state.showSidenav = true;
-  store.state.showFooter = true;
-  body.classList.remove("virtual-reality");
-
-  if (store.state.isPinned === false) {
-    const sidenav_show = document.querySelector(".g-sidenav-show");
-    sidenav_show.classList.remove("g-sidenav-hidden");
-    sidenav_show.classList.add("g-sidenav-pinned");
-    store.state.isPinned = true;
-  }
-  store.state.isTransparent = "bg-transparent";
-});
-</script>
 <template>
-  <div class="mt-3">
-    <navbar
-      :minNav="sidebarMinimize"
-      :toggle="toggleConfigurator"
-      :class="`${store.state.isNavFixed ? store.state.navbarFixed_class : ''} ${
-        store.state.isNavFixed ? 'bg-white' : 'bg-success'
-      }`"
-    />
-  </div>
-  <div
-    class="mx-3 mt-4 border-radius-xl position-relative"
-    :style="{
-      backgroundImage: 'url(' + require('@/assets/img/vr-bg.jpg') + ')',
-      backgroundSize: 'cover',
-    }"
-  >
-    <sidenav />
-    <main class="mt-1 main-content border-radius-lg">
-      <div
-        class="section min-vh-85 position-relative transform-scale-0 transform-scale-md-7"
-      >
-        <div class="container-fluid">
-          <div class="pt-10 row">
-            <div class="pt-5 text-center col-lg-1 col-md-1 pt-lg-0 ms-lg-5">
-              <a
-                href="javascript:;"
-                class="border-0 avatar avatar-md d-block"
-                data-bs-toggle="tooltip"
-                data-bs-placement="right"
-                title="My Profile"
-              >
-                <img
-                  class="border-radius-lg"
-                  alt="Image placeholder"
-                  src="@/assets/img/team-1.jpg"
-                />
-              </a>
-              <button
-                class="p-2 mt-2 btn btn-white border-radius-lg d-block"
-                type="button"
-                data-bs-toggle="tooltip"
-                data-bs-placement="right"
-                title="Home"
-              >
-                <i class="p-2 fas fa-home"></i>
-              </button>
-              <button
-                class="p-2 btn btn-white border-radius-lg d-block"
-                type="button"
-                data-bs-toggle="tooltip"
-                data-bs-placement="right"
-                title="Search"
-              >
-                <i class="p-2 fas fa-search"></i>
-              </button>
-              <button
-                class="p-2 btn btn-white border-radius-lg d-block"
-                type="button"
-                data-bs-toggle="tooltip"
-                data-bs-placement="right"
-                title="Minimize"
-              >
-                <i class="p-2 fas fa-ellipsis-h"></i>
-              </button>
-            </div>
-            <div class="col-lg-8 col-md-11">
-              <div class="d-flex">
-                <div class="me-auto">
-                  <h1 class="mb-0 display-1 font-weight-bold mt-n4">12°C</h1>
-                  <h6 class="mb-0 text-uppercase ms-1">Cloudy</h6>
-                </div>
-                <div class="ms-auto">
-                  <img
-                    class="w-50 float-end mt-lg-n4"
-                    src="@/assets/img/small-logos/icon-sun-cloud.png"
-                    alt="image sun"
-                  />
-                </div>
-              </div>
-              <div class="mt-4 row">
-                <div class="col-lg-4 col-md-4">
-                  <card-calendar />
-                </div>
-                <div class="mt-4 col-lg-4 col-md-4 mt-sm-0">
-                  <card-to-do />
-                  <card-email />
-                </div>
-                <div class="mt-4 col-lg-4 col-md-4 mt-sm-0">
-                  <card-player />
-                  <card-message />
-                </div>
-              </div>
-            </div>
+  <div class="card p-3 mt-3">Current Path: {{ currentPath.join('/') || '/' }}</div>
+  <div class="bg-white">
+    <div class="card p-1 mt-1">
+      <div class="mb-2">
+        <button @click="navigateBack"  class="btn btn-secondary btn-sm">Back</button>
+      </div>
+      <ul>
+        <li v-for="folder in folders" :key="folder.id">
+          <div class="m-3" @dblclick="handleFolderClick(folder)">
+            <span v-if="folder.type === 'folder'">
+              <img class="svgImage" src="../assets/img/small-logos/folder.svg" />
+            </span>
+            <span v-else>
+              <img class="svgImage" src="../assets/img/small-logos/file.svg" />
+            </span>
+            <div>{{ folder.name }}</div>
           </div>
+          <!-- Recursively render child folders -->
+          <VirtualReality v-if="folder.children" :folders="folder.children" />
+        </li>
+      </ul>
+
+      <div class="card">
+        <div v-if="selectedFileData" class="row">
+          <h2>File Data:</h2>
+          <pre>{{ selectedFileData }}</pre>
+        </div>
+        <div v-if="warningMessage">
+          <p>{{ warningMessage }}</p>
         </div>
       </div>
-    </main>
-  </div>
-  <app-footer class="py-3 bg-white border-radius-lg" />
-</template> -->
-<template>
-  <div>
-    <h2>Virtual File System</h2>
-    <ul>
-      <ShowFileStructure :node="virtualFileSystem" :name="'Root'" />
-    </ul>
+    </div>
   </div>
 </template>
 
+
 <script setup>
-import {reactive, onMounted } from 'vue';
-import ShowFileStructure from './components/ShowFileStructure.vue';
+import { ref, onMounted } from 'vue'
 import api from '../services/api'
+const currentPath = ref([])
+const folders = ref([])
+const selectedFileData = ref(null) // To store the data of the selected file
+const warningMessage = ref('')
 
-const virtualFileSystem = reactive({});
-
-// Fetch file system structure from the backend
-const fetchFileSystem = async () => {
+//
+const fetchPreviosFolder = async (folderId) => {
   try {
-    const response = await api.get('/api/service/get-key-value-pairs');
-    const storedData = response.data;
-    storedData.forEach(({ path, data }) => {
-      createPathAndAddFile(virtualFileSystem, path.split('/'), data);
-    });
+    const response = await api.get('/api/service/get-previous-nodes', {
+      params: { folderId },
+    })
+    folders.value = response.data
+    console.log('Fetched folders:', folders.value)
   } catch (error) {
-    console.error('Error fetching file system:', error);
+    console.error('Error fetching folders:', error)
+    return []
   }
-};
+}
 
-// Create folders and add files based on path and content
-const createPathAndAddFile = (currentNode, pathParts, data) => {
-  const lastPart = pathParts.pop(); // The file name
-  let node = currentNode;
+//
 
-  pathParts.forEach(part => {
-    if (!node[part]) {
-      node[part] = {};
+const fetchFolders = async (folderId) => {
+  try {
+    console.log('folder Id:', folderId)
+    const response = await api.get('/api/service/get-nodes', {
+      params: { folderId },
+    })
+    console.log('folder Id:', folderId)
+    folders.value = response.data
+    console.log('Fetched folders:', folders.value)
+  } catch (error) {
+    console.error('Error fetching folders:', error)
+    return []
+  }
+}
+
+const handleFolderClick = async (folder) => {
+  if (folder.type === 'folder') {
+    const children = await fetchFolders(folder.id)
+    selectedFileData.value = null
+    warningMessage.value = ''
+    if (!currentPath.value.includes(folder.name)) {
+      currentPath.value.push(folder.name)
     }
-    node = node[part];
-  });
+    // Update the current folder to include its children
+    const folderData = folders.value.find((f) => f.id === folder.id)
 
-  // Add file content to the last part of the path
-  node[lastPart] = data;
-};
+    if (folderData) {
+      folderData.children = children
+    }
+  } else if (folder.type === 'file') {
+    handleFileClick(folder)
+  }
+}
 
-// Fetch the file system when the component is mounted
+const handleFileClick = (file) => {
+  selectedFileData.value = null
+  warningMessage.value = ''
+  // Check if the file is in the current folder
+  if (!currentPath.value.includes(file.name)) {
+    currentPath.value.push(file.name)
+  }
+  const isInCurrentFolder = folders.value.some((f) => f.id === file.id)
+  if (isInCurrentFolder) {
+    const fileData = file.data
+
+    if (fileData) {
+      selectedFileData.value = fileData
+      warningMessage.value = ''
+    } else {
+      selectedFileData.value = null
+      warningMessage.value = 'No data available for this file.'
+    }
+  } else {
+    selectedFileData.value = null
+    warningMessage.value = 'File is not available in the current folder.'
+  }
+}
+//
+const navigateBack = async (folder) => {
+  selectedFileData.value = null
+  warningMessage.value = ''
+  if (currentPath.value.length >= 1) {
+    currentPath.value.pop() // Remove the last segment
+    if (currentPath.value.length === 0) {
+      const children  = await fetchFolders(null)
+      const folderData = folders.value.find((f) => f.id === folder.id)
+        if (folderData) {
+        folderData.children = children
+      }
+    } else {
+      const children = await fetchPreviosFolder(folder.id)
+
+      const folderData = folders.value.find((f) => f.id === folder.id)
+
+      if (folderData) {
+        folderData.children = children
+      }
+    }
+  }
+}
+
 onMounted(() => {
-  fetchFileSystem();
-});
+  fetchFolders(null) // Fetch the initial list of folders
+})
 </script>
+<style scoped>
+.svgImage {
+  height: 40px;
+  width: auto;
+}
+</style>

@@ -1,49 +1,4 @@
-<!-- <template>
-  <div>
-    <input v-model="newPath" placeholder="Enter file or folder path" />
-    <div><img class="svgImage" src="../../assets/img/small-logos/file.svg"  @click="createFile" /> create env file</div>
-    <span><img class="svgImage" src="../../assets/img/small-logos/folder.svg" @click="createFolder" />Create Folder</span>
-    <p v-if="error">{{ error }}</p>
-    <p v-if="message">{{ message }}</p>
-  </div>
-</template>
 
-<script setup>
-import { ref } from 'vue'
-import api from '../../services/api'
-
-
-const newPath = ref('')
-const message = ref('')
-const error = ref('')
-
-const createFile = async () => {
-  try {
-    // await api.post('/api/files/create-file', { path: newPath.value })
-
-    console.log(newPath.value)
-    message.value = 'File created successfully'
-  } catch (err) {
-    error.value = 'Error creating file'
-  }
-}
-
-const createFolder = async () => {
-  try {
-    await api.post('/api/files/create-folder', { path: newPath.value })
-    message.value = 'Folder created successfully'
-    console.log(newPath.value)
-  } catch (err) {
-    error.value = 'Error creating folder'
-  }
-}
-</script>
-<style scoped>
-.svgImage{
-  height: 30px;
-  width: auto;
-}
-</style> -->
 <template>
   <div>
     <!-- Create File/Folder Section -->
@@ -52,17 +7,14 @@ const createFolder = async () => {
     <button @click="createFile">Create File</button>
   
 
-    <!-- Virtual File System Display -->
     <h2>Virtual File System</h2>
-    <ul>
-      <ShowFileStructure :node="virtualFileSystem" :name="'Root'" />
-    </ul>
+  
   </div>
 </template>
 
 <script setup>
 import { ref, reactive,defineEmits } from 'vue';
-import ShowFileStructure from './ShowFileStructure.vue'; // Import the FileFolderNode component
+
 
 // Reactive virtual file system object
 const virtualFileSystem = reactive({});

@@ -1,4 +1,4 @@
-
+<!-- 
 <template>
   <div class="container top-0 position-sticky z-index-sticky">
     <div class="row">
@@ -192,12 +192,12 @@
                 </p>
               </form>
             </div>
-                         <!-- Display success message -->
+                         Display success message
     <div v-if="successMessage" class="success-message">
       {{ successMessage }}
     </div>
     
-    <!-- Display error message -->
+    Display error message
     <div v-if="errorMessage" class="error-message">
       {{ errorMessage }}
     </div>
@@ -289,4 +289,5 @@ const handleSubmit = async (event) => {
 .error-message {
   color: red;
 }
-</style>
+</style> -->
+<template><div></div></template>
