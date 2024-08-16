@@ -1,6 +1,6 @@
 <template>
   <div class="row mt-6">
-    <div class="card shadow-lg mt-n6">
+    <div class="mt-n6">
       <div class="card-body p-3">
         <div class="row gx-4">
           
@@ -128,7 +128,6 @@
             </div>
           </div>
         </div>
-        <CreateFile @pathCreated="handlePathCreated"></CreateFile>
         
         <div class="row mt-3">
           <div class="col-lg-12">
@@ -136,7 +135,6 @@
             <button @click="changeEditMode(true)" class="btn btn-primary">View</button>
             <button @click="changeEditMode(false)" class="btn btn-primary">Edit</button>
             </span>
-            <div>path:{{createdPath}}</div>
           <span v-if="editable">View Mode</span><span v-else>Edit Mode</span>
             <div v-if="viewMode === 'table'" class="card">
               <div class="card-body">
@@ -211,13 +209,17 @@ import { onBeforeMount, reactive, watch, onMounted } from 'vue'
 import { ref } from 'vue'
 import { useStore } from 'vuex'
 import MyTextArea from '../components/MyTextArea.vue'
-import CreateFile from './components/CreateFile.vue'
 import api from '../services/api'
 import setNavPills from '@/assets/js/nav-pills.js'
 import setTooltip from '@/assets/js/tooltip.js'
 
+const props = defineProps({
+  data: Object,
+  nodeId: Number
+});
 
 const store = useStore()
+
 
 onMounted(() => {
   store.state.isAbsolute = true
@@ -256,11 +258,9 @@ const editKeyValues = reactive({})
 const envRepresentation = ref('')
 const jsonRepresentation = ref('')
 
-const createdPath = ref('');
 
-const handlePathCreated = (path) => {
-  createdPath.value = path;
-};
+
+
 
 //
 const beautifyJson = () => {
@@ -273,6 +273,7 @@ const beautifyJson = () => {
 };
 
 const updateRepresentations = () => {
+
   jsonRepresentation.value = JSON.stringify(keyValuePairs, null, 2)
   envRepresentation.value = Object.entries(keyValuePairs)
     .map(([key, value]) => `${key}=${value}`)
@@ -401,19 +402,20 @@ const updateFromJson = () => {
   }
 }
 
+
 const sendKeyValuePairsToBackend = async () => {
   try {
-    if (!createdPath.value) {
+    if (!props.nodeId) {
       alert('Path is not set');
       return;
     }
 
     const payload = {
-      path: createdPath.value,
+      id:props.nodeId,
       data: JSON.stringify(keyValuePairs),
     };
-
-    const response = await api.post('/api/service/save-path', payload, {
+    console.log(payload)
+    const response = await api.post('/api/service/save-data', payload, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -426,8 +428,9 @@ const sendKeyValuePairsToBackend = async () => {
   }
 }
 
+
 onMounted(() => {
-  const savedPairs = localStorage.getItem('keyValuePairs')
+  const savedPairs = props.data
   if (savedPairs) {
     const parsedPairs = JSON.parse(savedPairs)
 

@@ -33,7 +33,7 @@ const getRoute = () => {
         </sidenav-item>
       </li>
 
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <sidenav-item
           to="/tables"
           :class="getRoute() === 'tables' ? 'active' : ''"
@@ -45,9 +45,9 @@ const getRoute = () => {
             ></i>
           </template>
         </sidenav-item>
-      </li>
+      </li> -->
 
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <sidenav-item
           to="/billing"
           :class="getRoute() === 'billing' ? 'active' : ''"
@@ -57,20 +57,20 @@ const getRoute = () => {
             <i class="ni ni-credit-card text-success text-sm opacity-10"></i>
           </template>
         </sidenav-item>
-      </li>
+      </li> -->
 
       <li class="nav-item">
         <sidenav-item
-          to="/virtual-reality"
-          :class="getRoute() === 'virtual-reality' ? 'active' : ''"
-          :navText="'Virtual Reality'"
+          to="/node-explorer"
+          :class="getRoute() === 'node-explorer' ? 'active' : ''"
+          :navText="'Node Explorer'"
         >
           <template v-slot:icon>
             <i class="ni ni-app text-info text-sm opacity-10"></i>
           </template>
         </sidenav-item>
       </li>
-
+<!-- 
       <li class="nav-item">
         <sidenav-item
           to="/rtl-page"
@@ -81,7 +81,7 @@ const getRoute = () => {
             <i class="ni ni-world-2 text-danger text-sm opacity-10"></i>
           </template>
         </sidenav-item>
-      </li>
+      </li> -->
 
       <li class="mt-3 nav-item">
      <h6

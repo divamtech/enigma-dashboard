@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Signin from '../views/Signin.vue'
 import Signup from '../views/Signup.vue'
 import baseRoutes from './baseRoutes.js'
+import NodeExplorer from '../views/NodeExplorer.vue'
 // import { useStore } from 'vuex'
 
 const routes = [
@@ -22,6 +23,17 @@ const routes = [
     name: 'Signup',
     component: Signup,
   },
+  {
+    path: '/node-explorer/:folderId?/:fileId?',
+    name: 'Folders',
+    component: NodeExplorer,
+    props: true,
+  },
+  // {
+  //   path: '/virtual-reality/:fileId',
+  //   name: 'Virtual Reality',
+  //   component: VirtualReality, // Replace with your component
+  // },
 ]
 
 const router = createRouter({
